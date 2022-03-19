@@ -6,7 +6,7 @@
 Summary:	A regular expression library for W3C XML Schema regular expressions
 Name:		ghc-%{pkgname}
 Version:	9.2.0.3
-Release:	1
+Release:	2
 License:	MIT
 Group:		Development/Languages
 #Source0Download: http://hackage.haskell.org/package/hxt-regex-xmlschema
