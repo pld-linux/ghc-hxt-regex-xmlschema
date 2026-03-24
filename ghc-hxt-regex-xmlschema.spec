@@ -4,6 +4,7 @@
 #
 %define		pkgname	hxt-regex-xmlschema
 Summary:	A regular expression library for W3C XML Schema regular expressions
+Summary(pl.UTF-8):	Biblioteka wyrażeń regularnych ze specyfikacji W3C XML Schema
 Name:		ghc-%{pkgname}
 Version:	9.2.0.3
 Release:	2
@@ -14,15 +15,33 @@ Source0:	http://hackage.haskell.org/package/%{pkgname}-%{version}/%{pkgname}-%{v
 # Source0-md5:	7b875bedc63771bad57e42164387c4db
 URL:		http://hackage.haskell.org/package/hxt-regex-xmlschema
 BuildRequires:	ghc >= 6.12.3
-BuildRequires:	ghc-hxt-charproperties
+BuildRequires:	ghc-base >= 4
+BuildRequires:	ghc-base < 5
+BuildRequires:	ghc-bytestring >= 0.10
+BuildRequires:	ghc-hxt-charproperties >= 9
+BuildRequires:	ghc-hxt-charproperties < 10
+BuildRequires:	ghc-parsec >= 2.1
+BuildRequires:	ghc-parsec < 4
+BuildRequires:	ghc-text >= 0.10
 %if %{with prof}
 BuildRequires:	ghc-prof
-BuildRequires:	ghc-hxt-charproperties-prof
+BuildRequires:	ghc-base-prof >= 4
+BuildRequires:	ghc-base-prof < 5
+BuildRequires:	ghc-bytestring-prof >= 0.10
+BuildRequires:	ghc-hxt-charproperties-prof >= 9
+BuildRequires:	ghc-hxt-charproperties-prof < 10
+BuildRequires:	ghc-parsec-prof >= 2.1
+BuildRequires:	ghc-parsec-prof < 4
+BuildRequires:	ghc-text-prof >= 0.10
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.608
 %requires_eq	ghc
 Requires(post,postun):	/usr/bin/ghc-pkg
-Requires:	ghc-hxt-charproperties
+Requires:	ghc-base >= 4
+Requires:	ghc-bytestring >= 0.10
+Requires:	ghc-hxt-charproperties >= 9
+Requires:	ghc-parsec >= 2.1
+Requires:	ghc-text >= 0.10
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # debuginfo is not useful for ghc
@@ -34,19 +53,30 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 This library supports full W3C XML Schema regular expressions
 inclusive all Unicode character sets and blocks. The complete grammar
-can be found under http://www.w3.org/TR/xmlschema11-2/#regexs. It is
+can be found under <http://www.w3.org/TR/xmlschema11-2/#regexs>. It is
 implemented by the technique of derivations of regular expressions.
+
+%description -l pl.UTF-8
+Ta biblioteka zawiera pełną obsługę wyrażeń regularnych ze
+specyfikacji W3C XML Schema, w tym wszystkie zestawy znaków i bloki
+Unicode. Kompletną gramatyke można znaleźć pod
+<http://www.w3.org/TR/xmlschema11-2/#regexs>. Jest zaimplementowana z
+użyciem techniki wywodów wyrażeń regularnych.
 
 %package prof
 Summary:	Profiling %{pkgname} library for GHC
 Summary(pl.UTF-8):	Biblioteka profilująca %{pkgname} dla GHC
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	ghc-hxt-charproperties-prof
+Requires:	ghc-base-prof >= 4
+Requires:	ghc-bytestring-prof >= 0.10
+Requires:	ghc-hxt-charproperties-prof >= 9
+Requires:	ghc-parsec-prof >= 2.1
+Requires:	ghc-text-prof >= 0.10
 
 %description prof
-Profiling %{pkgname} library for GHC.  Should be installed when
-GHC's profiling subsystem is needed.
+Profiling %{pkgname} library for GHC. Should be installed when GHC's
+profiling subsystem is needed.
 
 %description prof -l pl.UTF-8
 Biblioteka profilująca %{pkgname} dla GHC. Powinna być zainstalowana
@@ -64,6 +94,7 @@ runhaskell Setup.hs configure -v2 \
 	--docdir=%{_docdir}/%{name}-%{version}
 
 runhaskell Setup.hs build
+
 runhaskell Setup.hs haddock --executables
 
 %install
@@ -74,8 +105,7 @@ runhaskell Setup.hs copy --destdir=$RPM_BUILD_ROOT
 
 # work around automatic haddock docs installation
 %{__rm} -rf %{name}-%{version}-doc
-cp -a $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version} %{name}-%{version}-doc
-%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+%{__mv} $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version} %{name}-%{version}-doc
 
 runhaskell Setup.hs register \
 	--gen-pkg-config=$RPM_BUILD_ROOT%{_libdir}/%{ghcdir}/package.conf.d/%{pkgname}.conf
